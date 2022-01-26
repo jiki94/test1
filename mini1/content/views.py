@@ -16,6 +16,9 @@ from config.settings import MEDIA_ROOT
 
 class Main(APIView):
     def get(self, request):
+        
+        identi = request.session.get('identi', None)
+        
         feed_object_list = Feed.objects.all().order_by('-id')
         feed_list = []
         #1. Feed에 있는 모든 데이터를 가져오겠다라는 의미 그리고 이걸 feed_list에 담겠다
@@ -30,21 +33,28 @@ class Main(APIView):
         
         # 글을 쓰고나서 프로필을 바꿔도 실시간으로 갱신하게해줌
         # feed_list를 내려줄 때 사용자가 feed를 좋아요 눌렀는지 안눌렀는지를 표시해줘야함 즉, 내가 이 feed에 대해서 좋아요 눌렀는지 안눌렀는지에 대한 데이터가 있어야함
+        query = request.GET.get('q', None)
+
         for feed in feed_object_list:
             user = User.objects.filter(identi=feed.identi).first()
-            
-            #내가 쓴게 내가 이 feed_id에 대해서 좋아요를 누른게 있으면 exist
-            #그래서 내가 좋아요를 눌렀으면 is_liked는 False가 됨
-            feed_list.append(dict(image=feed.image,
-                                content=feed.content,   
-                                profile_image=user.profile_image,
-                                nickname=user.nickname
-                                ))
-            
+            if query is None or query in feed.content:
+                #내가 쓴게 내가 이 feed_id에 대해서 좋아요를 누른게 있으면 exist
+                #그래서 내가 좋아요를 눌렀으면 is_liked는 False가 됨
+                like_count = Like.objects.filter(feed_id=feed.id, is_like=True).count()
+                is_liked=Like.objects.filter(feed_id=feed.id, identi=identi, is_like=True).exists()
+                is_marked=Bookmark.objects.filter(feed_id=feed.id, identi=identi, is_marked=True).exists()
+                feed_list.append(dict(image=feed.image,
+                                    content=feed.content,   
+                                    profile_image=user.profile_image,
+                                    nickname=user.nickname,
+                                    id=feed.id,
+                                    like_count=like_count,
+                                    is_liked=is_liked,
+                                    is_marked=is_marked
+                                    ))
         # 세션에 담았으므로 이제 유저 정보가 하드코딩되지않고 쓸수있게됨
         # 로그인하고 다른 사이트 갔다가 /main으로 다시 와도 세션정보 남아서 로그인 유지됨
         # 반대로 로그아웃한다음 다른 사이트 갔다가 /main 들어가면 세션정보가 없어서 로그인창 뜨게됨
-        identi = request.session.get('identi', None)
         
         #만약 로그인을 안하고 /main에 접속한 경우 로그인하라고 함
         if identi is None:
@@ -68,7 +78,8 @@ class UploadFeed(APIView):
         
 #이미지파일 이름들보면 영어숫자특수문자 막 섞여있는데 이거를 프로그램에서 잘 찾을 수 있게 하기위해 영어와 숫자로 이루어진 고유한 id값을 주기위해 사용
 #uuid4().hex는 랜덤하게 글자를 만들어줌 
-        uuid_name = uuid4().hex
+        ext = file.name.split(".")[-1]
+        uuid_name = str(uuid4().hex) + "." + str(ext)
         # 파일업로드한 위치는 ~/media에 uuid로 생성된 이름으로 저장
         save_path = os.path.join(MEDIA_ROOT, uuid_name)
         #파일을 읽어서 파일로 만들 때 쓴다고만 알아두자
@@ -87,6 +98,13 @@ class UploadFeed(APIView):
         Feed.objects.create(image=image, content=content, identi=identi)
         
         return Response(status = 200)
+
+class DeleteFeed(APIView):
+    def delete(self, request, id):
+        print("delete here")
+        query = Feed.objects.get(id=id)
+        query.delete()
+        return Response(status=200)
     
 class Profile(APIView):
     def get(self, request):
@@ -101,5 +119,59 @@ class Profile(APIView):
         #만약 세션정보에 아이디가 이미 있었는데 그 아이디가 회원이 아닌경우
         if user is None:
             return render(request, "user/login.html")
+        # like_feed_list(내가 좋아요를 누른 피드리스트)는 피드에서 내가 좋아요를 누른 id값이 내가 좋아요를 누른 리스트에 있는거
+        # id__n 은 Feed에 있는 id중에 feed id 리스트를 포함하고 있는 것만 걸림
+        # flat = True 안하면 리스트로 안나옴
+        feed_list = Feed.objects.filter(identi=identi).all()
+        like_list = list(Like.objects.filter(identi=identi, is_like=True).values_list('feed_id', flat = True))
+        like_feed_list = Feed.objects.filter(id__in=like_list)
+        bookmark_list = list(Bookmark.objects.filter(identi=identi, is_marked=True).values_list('feed_id', flat = True))
+        bookmark_feed_list = Feed.objects.filter(id__in=bookmark_list)
+        return render(request, 'content/profile.html', context=dict(feed_list=feed_list,
+                                                                    like_feed_list=like_feed_list,
+                                                                    bookmark_feed_list=bookmark_feed_list,
+                                                                    user=user))
+    
+class ToggleLike(APIView):
+    def post(self, request):
+        feed_id = request.data.get('feed_id', None)
+        favorite_text = request.data.get('favorite_text', True)
         
-        return render(request, 'content/profile.html', context=dict(user=user))
+        
+        if favorite_text == 'favorite_border':
+            is_like = True
+        else:
+            is_like = False
+        identi = request.session.get('identi', None)
+        
+        like = Like.objects.filter(feed_id=feed_id, identi=identi).first()
+        
+        if like:
+            like.is_like = is_like
+            like.save()
+        else:
+            Like.objects.create(feed_id=feed_id, is_like=is_like, identi=identi)
+        
+        return Response(status=200)
+    
+class ToggleBookmark(APIView):
+    def post(self, request):
+        feed_id = request.data.get('feed_id', None)
+        bookmark_text = request.data.get('bookmark_text', True)
+        
+        
+        if bookmark_text == 'bookmark_border':
+            is_marked = True
+        else:
+            is_marked = False
+        identi = request.session.get('identi', None)
+        
+        bookmark = Bookmark.objects.filter(feed_id=feed_id, identi=identi).first()
+        
+        if bookmark:
+            bookmark.is_marked = is_marked
+            bookmark.save()
+        else:
+            Bookmark.objects.create(feed_id=feed_id, is_marked=is_marked, identi=identi)
+        
+        return Response(status=200)
