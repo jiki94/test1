@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <link rel = "stylesheet" href = "{% static 'css/style.css' %}">
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{%static 'img/favicon.png'%}" rel="icon">
+  <link href="{% static 'img/apple-touch-icon.png'%}" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
+  <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <!-- <link href="assets/css/style.css" rel="stylesheet"> -->
+
+  <!-- =======================================================
+  * Template Name: WeBuild - v4.6.0
+  * Template URL: https://bootstrapmade.com/free-bootstrap-coming-soon-template-countdwon/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header">
+    <div class="container-fluid d-flex justify-content-between align-items-center"></div>
+  </header><!-- End #header -->
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero">
+    <div class="hero-container">
+      <header>
+        <h1> Weather & Gather </h1>
+        <div><hr></div>
+        <nav>
+            <div class = "menu">
+                <box><a href="http://127.0.0.1:8000/home/weather/">Weather & Clothes</a></box>
+                <box><a href="#">Gather</a></box>
+                <box><a href="#">Mypage</a></box>
+            </div>
+        </nav>
+    </header>
+      <h1 class="text-light"><span>weather & Gather</span></h1>
+      <h1>오늘의 날씨를 확인하고 옷차림 미리 준비하세요</h1>
+      <br>
+      <br>
+      <a href = "/hometem/kakaologinhome" class = "text-light"><span>카카오톡으로 날씨 정보 보내기<span></a>
+    
+        <h3>현재 날씨</h3>
+            <td>
+                <box>
+
+                    {% if today.2 == '소나기' %}
+                        <img src='{% static "img/shower.svg" %}' style = "width: 200; height: 200">
+                    {% elif today.2 == '눈' %}
+                        <img src='{% static "img/snow.svg" %}'style = "width: 200; height: 200">
+                    {% elif today.2 == '비/눈' %}
+                        <img src='{% static "img/sleet.svg" %}'style = "width: 200; height: 200">
+                    {% elif today.2 == '비' %}
+                        <img src='{% static "img/rain.svg" %}'style = "width: 200; height: 200">
+                    {% else %}
+                        {% if today.1 == '맑음' %}
+                            <img src='{% static "img/clear-day.svg" %}'style = "width: 200; height: 200">
+                        {% elif today.1 == '구름많음' %}
+                            <img src='{% static "img/cloudy.svg" %}'style = "width: 200; height: 200">
+                        {% else %}
+                            <img src='{% static "img/overcast.svg" %}'style = "width: 200; height: 200">
+                        {% endif%}
+                    {% endif %}
+
+                </box>
+                <box>기온 {{ today.0 }}℃</box>
+
+                <span>{% if today.2 != '없음' %}
+                        {{ today.2 }}
+                    {% else %}
+                        {{ today.1 }} 
+                    {% endif %}
+                </span>
+                
+                <span id = weather_box>
+                    <img src='{% static "img/wind.svg" %}'>
+                    <span>바람 {{ today.4 }}</span>
+
+                    <span>
+                        <img src='{% static "img/raindrops.svg" %}'>
+                        <span> 강수 확률 {{ today.3 }}</span>
+                        <span>습도 {{ today.5 }}</span>
+                    </span>
+
+                </span>
+                
+            </td>
+            <h2>옷 추천</h2>
+            <h3>oo님 오늘은 이렇게 입으시는 건 어때요?</h3>
+        
+        
+            <td> 
+                {% if today.6 >= "20220131" and today.6 <= "20220202" %}
+                    <img src = '{% static "img/hanbok.png" %}' style = "width: 150; height: auto;">
+                    <img src = '{% static "img/hanbok (2).png" %}' style = "width: 150; height: auto;">
+                    <img src = '{% static "img/hanbok (3).png" %}' style = "width: 150; height: auto;">
+                    <img src = '{% static "img/lucky-bag.png" %}' style = "width: 150; height: auto;">
+
+                {% elif today.6 >= "20220909" and today.6 <= "20220912" %}
+                    <img src = '{% static "img/hanbok.png" %}' style = "width: 150; height: auto;">
+                    <img src = '{% static "img/hanbok (2).png" %}' style = "width: 150; height: auto;">
+                    <img src = '{% static "img/hanbok (3).png" %}' style = "width: 150; height: auto;">
+                    <img src = '{% static "img/lucky-bag.png" %}' style = "width: 150; height: auto;">
+
+                {% else %}
+
+                    {% if today.0 >= 28 %}
+                        <img src='{% static "img/sleeveless-shirt.png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/skirt (2).png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/sleeveless-shirt (1).png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/sleeveless.png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/denim-shorts.png" %}'style = "width: 150; height: auto;">
+                
+                    {% elif today.0 >= 23 %}
+                        <img src='{% static "img/tshirt (3).png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/pants (2).png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/skirt.png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/jogger-pants.png" %}'style = "width: 150; height: auto;">
+                
+                    {% elif today.0 >= 20 %}
+                        <img src='{% static "img/blouse.png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/tshirt (2).png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/pants.png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/shirt.png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/dress.png" %}'style = "width: 150; height: auto;">
+                
+                    {% elif today.0 >= 17 %}
+                        <img src='{% static "img/hoodie (3).png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/ripped-jeans.png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/hoodie.png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/hoodie (4).png" %}'style = "width: 150; height: auto;">
+                
+                    {% elif today.0 >= 12 %}
+                        <img src='{% static "img/denim-jacket.png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/long-skirt.png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/cardigan.png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/cardigan (2).png" %}'style = "width: 150; height: auto;">
+                
+                    {% elif today.0 >= 9 %}
+                        <img src='{% static "img/turtleneck.png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/trench-coat.png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/jacket.png" %}'style = "width: 150; height: auto;">
+                        <img src='{% static "img/jumper.png" %}'style = "width: 150; height: auto;">
+                
+                    {% elif today.0 >= 5 %}
+                        <img src='{% static "img/fur-jacket.png" %}'style="width: 150; height: auto;">
+                        <img src='{% static "img/fur-coat.png" %}'style="width: 150; height: auto;">
+                        <img src='{% static "img/coat.png" %}'style="width: 150; height: auto;">
+                        <img src='{% static "img/pad.png" %}'style="width: 150; height: auto;">
+                
+                    {% else %}
+                        <img src='{% static "img/scarf.png" %}' style="width: 150; height: auto;">
+                        <img src='{% static "img/beanie.png" %}'style="width: 150; height: auto;">
+                        <img src='{% static "img/mittens.png" %}'style="width: 150; height: auto;">
+                        <img src='{% static "img/puffer-coat.png" %}'style="width: 150; height: auto;">
+                
+                    {% endif %}
+                {% endif %}
+            </td>
+        </div>
+
+    
+        <h2>내일 출근 날씨{{tomorrow}}</h2>
+    
+      </div>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{% static 'js/main.js' %}"></script>
+</body>
+<footer>"designed Freepik, justicon, Nhor Phai from Flaticon"
+  Copyright © 2022 Bas Milius. All rights reserved.
+</footer>
+  
+</html>

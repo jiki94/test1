@@ -1,0 +1,315 @@
+<script>
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+{% load static %}
+
+<!DOCTYPE html>
+<link rel="stylesheet" type="text/css" href="{% static '../static/css/style.css' %}">
+<html>
+    
+<head>
+    <title> Weather & Gather </title>
+</head>
+<section id = "window">
+    <header>
+        <div class = "title">
+            <h1> Weather & Gather </h1>
+        </div>
+        <div align = "right">
+
+            {% if request.session.identi %}
+                <box>{{ request.session.identi }} 님 반갑습니다.</box>
+            {% else %}
+                <box><a href="http://127.0.0.1:8000/user/login">Login</a></box>
+            {% endif %}
+        </div>
+        <div><hr></div>
+        <nav>
+            <div class = "menu">
+                <box><a href="http://127.0.0.1:8000/home/index/">Weather & Clothes</a></box>
+                <box><a href="http://127.0.0.1:8000/main/">Gather</a></box>
+                <box><a href="http://127.0.0.1:8000/content/profile">Mypage</a></box>
+            </div>
+        </nav>
+    </header>
+
+    <body>
+        <h1 class = "text-light" ><span>오늘의 날씨를 확인하고 옷차림 미리 준비하세요</span></h1>
+
+        <div class = "todayWeather" align = "center">
+            <div class = "blur" align = "center">
+
+                <h3>현재 날씨</h3>
+                <div class = "imageWeather">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <!-- 이 부분이 날씨 아이콘 -->
+                                {% if today.2 == '소나기' %}
+                                    <img src='{% static "img/shower.svg" %}' style = "width: 200; height: 200">
+                                {% elif today.2 == '눈' %}
+                                    <img src='{% static "img/snow.svg" %}'style = "width: 200; height: 200">
+                                {% elif today.2 == '비/눈' %}
+                                    <img src='{% static "img/sleet.svg" %}'style = "width: 200; height: 200">
+                                {% elif today.2 == '비' %}
+                                    <img src='{% static "img/rain.svg" %}'style = "width: 200; height: 200">
+                                {% else %}
+                                    {% if today.1 == '맑음' %}
+                                        <img src='{% static "img/clear-day.svg" %}'style = "width: 200; height: 200">
+                                    {% elif today.1 == '구름많음' %}
+                                        <img src='{% static "img/cloudy.svg" %}'style = "width: 200; height: 200">
+                                    {% else %}
+                                        <img src='{% static "img/overcast.svg" %}'style = "width: 200; height: 200">
+                                    {% endif%}
+                                {% endif %}
+                            </td>
+                            <!-- wind 바람 아이콘, raindrops 강수 확률 -->
+                            <td><img src='{% static "img/thermometer.svg" %}'style = "width: 200; height: 200"></td>
+                            <td><img src='{% static "img/wind.svg" %}'style = "width: 200; height: 200"></td>
+                            <td><img src='{% static "img/raindrops.svg" %}'style = "width: 200; height: 200"></td>
+                            <br>
+                            <span>
+                                <h2 style="position:absolute; left: 30%;"></h2>
+                                    <!-- 날씨 상태 맑음, 눈, 비 등등 -->
+                                    {% if today.2 != '없음' %}
+                                        {{ today.2 }}
+                                    {% else %}
+                                        {{ today.1 }} 
+                                    {% endif %}
+                                </h2>
+                        
+                            </span>
+                            
+                        </tr>
+                    </tbody>
+            
+                    <span>
+                        <!-- 기온 3℃ -->
+                        현재 기온 {{ today.0 }}℃
+                    </span>
+                
+                    
+                    
+                    
+                    <span id = weather_box>
+                        
+                        <span>바람 {{ today.4 }}</span>
+    
+                        <span>
+            
+                            <span> 강수 확률 {{ today.3 }}%</span>
+                    
+                        </span>
+    
+                    </span>
+                    
+                </div>
+
+            </div>
+        </div>
+
+                
+        <div class = "clothes" align = "center">
+            <div class = "blur2">
+                <h2>옷 추천</h2>
+                <h3>오늘은 이렇게 입으시는 건 어때요?</h3>
+            
+            
+                <td> 
+                    {% if today.6 >= "20220131" and today.6 <= "20220202" %}
+                        <img src = '{% static "img/hanbok.png" %}' style = "width: 150; height: auto;">
+                        <img src = '{% static "img/hanbok (2).png" %}' style = "width: 150; height: auto;">
+                        <img src = '{% static "img/hanbok (3).png" %}' style = "width: 150; height: auto;">
+                        <img src = '{% static "img/lucky-bag.png" %}' style = "width: 150; height: auto;">
+
+                    {% elif today.6 >= "20220909" and today.6 <= "20220912" %}
+                        <img src = '{% static "img/hanbok.png" %}' style = "width: 150; height: auto;">
+                        <img src = '{% static "img/hanbok (2).png" %}' style = "width: 150; height: auto;">
+                        <img src = '{% static "img/hanbok (3).png" %}' style = "width: 150; height: auto;">
+                        <img src = '{% static "img/lucky-bag.png" %}' style = "width: 150; height: auto;">
+
+                    {% else %}
+
+                        {% if today.0 >= 28 %}
+                            <img src='{% static "img/sleeveless-shirt.png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/skirt (2).png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/sleeveless-shirt (1).png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/sleeveless.png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/denim-shorts.png" %}'style = "width: 150; height: auto;">
+                    
+                        {% elif today.0 >= 23 %}
+                            <img src='{% static "img/tshirt (3).png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/pants (2).png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/skirt.png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/jogger-pants.png" %}'style = "width: 150; height: auto;">
+                    
+                        {% elif today.0 >= 20 %}
+                            <img src='{% static "img/blouse.png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/tshirt (2).png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/pants.png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/shirt.png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/dress.png" %}'style = "width: 150; height: auto;">
+                    
+                        {% elif today.0 >= 17 %}
+                            <img src='{% static "img/hoodie (3).png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/ripped-jeans.png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/hoodie.png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/hoodie (4).png" %}'style = "width: 150; height: auto;">
+                    
+                        {% elif today.0 >= 12 %}
+                            <img src='{% static "img/denim-jacket.png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/long-skirt.png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/cardigan.png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/cardigan (2).png" %}'style = "width: 150; height: auto;">
+                    
+                        {% elif today.0 >= 9 %}
+                            <img src='{% static "img/turtleneck.png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/trench-coat.png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/jacket.png" %}'style = "width: 150; height: auto;">
+                            <img src='{% static "img/jumper.png" %}'style = "width: 150; height: auto;">
+                    
+                        {% elif today.0 >= 5 %}
+                            <img src='{% static "img/fur-jacket.png" %}'style="width: 150; height: auto;">
+                            <img src='{% static "img/fur-coat.png" %}'style="width: 150; height: auto;">
+                            <img src='{% static "img/coat.png" %}'style="width: 150; height: auto;">
+                            <img src='{% static "img/pad.png" %}'style="width: 150; height: auto;">
+                    
+                        {% else %}
+                            <img src='{% static "img/scarf.png" %}' style="width: 150; height: auto;">
+                            <img src='{% static "img/beanie.png" %}'style="width: 150; height: auto;">
+                            <img src='{% static "img/mittens.png" %}'style="width: 150; height: auto;">
+                            <img src='{% static "img/puffer-coat.png" %}'style="width: 150; height: auto;">
+                    
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </div>
+        </div>
+
+       
+
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        <br><br><br><br><br><br><br><br><br>
+        <div class = "tomorrowWeather" align = "center">
+            <div class = "blur3"  align = "center">
+                <h2 align = "center">내일 출근 날씨</h2>
+                <div class = "imageWeather">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <!-- 이 부분이 날씨 아이콘 -->
+                                {% if tomorrow.2 == '소나기' %}
+                                    <img src='{% static "img/shower.svg" %}' style = "width: 200; height: 200">
+                                {% elif tomorrow.2 == '눈' %}
+                                    <img src='{% static "img/snow.svg" %}'style = "width: 200; height: 200">
+                                {% elif tomorrow.2 == '비/눈' %}
+                                    <img src='{% static "img/sleet.svg" %}'style = "width: 200; height: 200">
+                                {% elif tomorrow.2 == '비' %}
+                                    <img src='{% static "img/rain.svg" %}'style = "width: 200; height: 200">
+                                {% else %}
+                                    {% if tomorrow.1 == '맑음' %}
+                                        <img src='{% static "img/clear-day.svg" %}'style = "width: 200; height: 200">
+                                    {% elif tomorrow.1 == '구름많음' %}
+                                        <img src='{% static "img/cloudy.svg" %}'style = "width: 200; height: 200">
+                                    {% else %}
+                                        <img src='{% static "img/overcast.svg" %}'style = "width: 200; height: 200">
+                                    {% endif%}
+                                {% endif %}
+                            </td>
+                            <!-- wind 바람 아이콘, raindrops 강수 확률 -->
+                            <td><img src='{% static "img/thermometer.svg" %}'style = "width: 200; height: 200"></td>
+                            <td><img src='{% static "img/wind.svg" %}'style = "width: 200; height: 200"></td>
+                            <td><img src='{% static "img/raindrops.svg" %}'style = "width: 200; height: 200"></td>
+                            <br>
+                            <span>
+                                <h2 style="position:absolute; left: 30%;"></h2>
+                                    <!-- 날씨 상태 맑음, 눈, 비 등등 -->
+                                    {% if tomorrow.2 != '없음' %}
+                                        {{ tomorrow.2 }}
+                                    {% else %}
+                                        {{ tomorrow.1 }} 
+                                    {% endif %}
+                                </h2>
+                        
+                            </span>
+                            
+                        </tr>
+                    </tbody>
+            
+                    <span>
+                        <!-- 기온 3℃ -->
+                        내일 기온 {{ tomorrow.0 }}℃
+                    </span>
+                
+                    
+                    
+                    
+                    <span id = weather_box>
+                        
+                        <span>바람 {{ tomorrow.4 }}</span>
+    
+                        <span>
+            
+                            <span> 강수 확률 {{ tomorrow.3 }}%</span>
+                    
+                        </span>
+    
+                    </span>
+                    
+                </div>
+            </div>
+        </div>
+
+        <br><br>
+        <style>
+            #kbutton button{
+                background-color: Transparent;
+                background-repeat:no-repeat;
+                border: none;
+                cursor:pointer;
+                overflow: hidden;
+                outline:none;
+            }
+            
+        </style>
+        <div class="kakao" id = "kbutton" align="center">
+            <div class = "blur4" align="center">
+                <h2 class = "text-light">오늘의 날씨를 카카오톡 메시지로 전송해 보세요</h3>
+                <button type = "카카오 로그아웃">
+                <a href = "/home/kakaologinhome"><img src = '/static/img/kakao-talk.png' width = 100, height = 100 /></a>
+                </button>
+            </div>
+        </div>
+    </body>
+
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br>
+    <footer>
+
+        <div class = "footer" align = "center" >
+            <div>
+                "designed Freepik, justicon, Nhor Phai from Flaticon"
+            </div>
+            <div>
+                Copyright © 2022 Bas Milius. All rights reserved.
+            </div>
+        </div>
+        
+    </footer>
+</section>
+</html>

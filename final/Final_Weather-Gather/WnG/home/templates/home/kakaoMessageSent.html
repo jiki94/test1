@@ -1,0 +1,69 @@
+<script>
+  function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+              var cookie = cookies[i].trim();
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+          }
+      }
+      return cookieValue;
+  }
+</script>
+
+{% load static %}
+
+<!DOCTYPE html>
+<link rel = "stylesheet" href = "{% static 'css/style.css' %}">
+<html>
+  
+<head>
+  <title> Weather & Gather </title>
+</head>
+<section id = "window">
+  <header>
+      <h1> Weather & Gather</h1>
+      <div><hr></div>
+  </header>
+
+  <body>
+    <style>
+        #kakao button{
+            background-color: Transparent;
+            background-repeat:no-repeat;
+            border: none;
+            cursor:pointer;
+            overflow: hidden;
+            outline:none;
+        }
+    </style>
+    <div class="hero-container" id="kakao" align="center">
+      <h1 class="text-light"><span>weather & Gather</span></h1>
+      <h2 class="text-light"><span>깨똑 전송 완료</span></h1>
+      <h2 class="text-light"><span>깨똑에 오늘의 날씨와 옷차림이 전송되었습니다.</span></h2>
+      <br>
+      <br>
+      <h2 class="text-light"><span>홈화면으로 돌아가기</span></h2>
+      <button type = "Home으로 가기">
+        <a href = "/home/index"><img src = '/static/img/kakao-talk.png' width = 100, height = 100 /></a>
+      </button>
+      <br>
+      <br>
+      <h2 class="text-light"><span>카카오톡 로그아웃을 원합니다.</span></h2>
+      <form action="/home/kakaoLogout" method="GET">
+        <button type = "카카오 로그아웃">
+            <img src = '/static/img/kakao-talk.png' width = 100, height = 100 />
+        </button>
+      </form>
+  
+      </div>
+  </body>
+  <footer>"designed Freepik, justicon, Nhor Phai from Flaticon"
+    Copyright © 2022 Bas Milius. All rights reserved.
+</footer>
+</section>
+</html>
